@@ -23,6 +23,10 @@ Widget::Widget(QWidget *parent)
             auto json = CheckName(login).build();
             QJsonDocument doc(json);
             socket.write(doc.toJson(QJsonDocument::Compact));
+            qDebug() << "connected to server: " << doc;
+        }
+        else{
+            qDebug() << "failed to connect to server";
         }
     });
     QWidget::connect(&socket, &QTcpSocket::readyRead, this, &Widget::newMessage);
@@ -37,6 +41,7 @@ Widget::~Widget()
 void Widget::newMessage()
 {
     QJsonDocument jsonDoc = QJsonDocument::fromJson(socket.readAll());
+    qDebug() << "incoming json: " << jsonDoc;
     if (!jsonDoc.isObject()) {
         qDebug() << "Invalid JSON!";
         return;
