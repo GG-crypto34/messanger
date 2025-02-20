@@ -28,7 +28,7 @@ void Server::check_name(const QJsonObject& json, User* user)
         auto jsonObj = AcceptName().setAccept("invalid").build();
         QJsonDocument doc(jsonObj);
         user->write(doc.toJson());
-        qDebug() << __func__ << doc;
+        qDebug() << __func__ << ": "<< doc;
         return;
     }
     user->name=name;
@@ -36,7 +36,7 @@ void Server::check_name(const QJsonObject& json, User* user)
     auto jsonObj = AcceptName().setAccept("succed").setUsers(users).build();
     QJsonDocument doc(jsonObj);
     user->write(doc.toJson());
-    qDebug() << __func__ << doc;
+    qDebug() << __func__ << ": "<< doc;
 }
 
 void Server::public_message(const QJsonObject&, User*)
