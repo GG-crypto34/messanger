@@ -3,12 +3,16 @@
 #include <QJsonObject>
 #include <QTcpSocket>
 #include <QMessageBox>
+#include <QDebug>
 #include "factory/acceptname.h"
 
 Server::Server()
 {
-    if(!listen(QHostAddress::Any,6000)){
-        QMessageBox::critical(nullptr, "Listener Error", "failed listening on port 6000");
+    if(listen(QHostAddress::Any,6000)){
+        qDebug() << "listen succed";
+    }
+    else{
+        qDebug() << "listen failed";
         return;
     }
     commands["public_message"]=[this](const QJsonObject& json, User* user){public_message(json, user);};
@@ -24,12 +28,15 @@ void Server::check_name(const QJsonObject& json, User* user)
         auto jsonObj = AcceptName().setAccept("invalid").build();
         QJsonDocument doc(jsonObj);
         user->write(doc.toJson());
+        qDebug() << __func__ << ": "<< doc;
+        return;
     }
     user->name=name;
     user->status="active";
     auto jsonObj = AcceptName().setAccept("succed").setUsers(users).build();
     QJsonDocument doc(jsonObj);
     user->write(doc.toJson());
+    qDebug() << __func__ << ": "<< doc;
 }
 
 void Server::public_message(const QJsonObject&, User*)
@@ -54,9 +61,11 @@ void Server::incomingConnection(qintptr socketDescriptor)
         delete user;
         return;
     }
+    qDebug() << "new user";
     QObject::connect(user, &QTcpSocket::readyRead, this, &Server::newMessage);
     QObject::connect(user, &QTcpSocket::disconnected, this, &Server::disconnect);
     users.insert(user);
+    qDebug() << "number of users: " << users.size();
 }
 
 bool Server::isValid(const QString &name)
@@ -72,7 +81,7 @@ void Server::newMessage()
     auto user=dynamic_cast<User*>(sender());
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(user->readAll());
-
+    qDebug() << "new message: " << jsonDoc;
     if (!jsonDoc.isObject()) {
         qDebug() << "Invalid JSON!";
         return;
