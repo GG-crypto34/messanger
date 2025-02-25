@@ -14,9 +14,8 @@ Widget::Widget(QWidget *parent)
     ui->scrollAreaWidgetContents->layout()->addWidget(new Message);
     ui->scrollAreaWidgetContents->layout()->addWidget(new Message);
     ui->scrollAreaWidgetContents->layout()->addWidget(new Message);
-    Login l;
-    l.exec();
-    connect(&l, &Login::pushButton,[this](QString ip, QString login){
+    l=new Login;
+    connect(l, &Login::pushButton,[this](QString ip, QString login){
         Widget::login=login;
         socket.connectToHost(ip,6000);
         if(socket.waitForConnected(30000)){
@@ -31,6 +30,7 @@ Widget::Widget(QWidget *parent)
     });
     QWidget::connect(&socket, &QTcpSocket::readyRead, this, &Widget::newMessage);
     commands["accept_name"]=[this](const QJsonObject& json){accept_name(json);};
+    l->exec();
 }
 
 Widget::~Widget()
@@ -54,7 +54,7 @@ void Widget::newMessage()
 void Widget::accept_name(const QJsonObject &json)
 {
     if(json["accept"].toString()=="succed"){
-
+        l->close();
     }
     else{
         //ошибка в имени

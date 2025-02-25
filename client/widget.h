@@ -9,6 +9,8 @@ class Widget;
 }
 QT_END_NAMESPACE
 
+class Login;
+
 class Widget : public QWidget
 {
     Q_OBJECT
@@ -25,5 +27,6 @@ private:
     QString login;
     QMap<QString, std::function<void(const QJsonObject&)>> commands;
     void accept_name(const QJsonObject&);
+    Login* l;
 };
 #endif // WIDGET_H

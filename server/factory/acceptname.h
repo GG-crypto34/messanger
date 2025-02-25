@@ -19,11 +19,13 @@ public:
 AcceptName& AcceptName::setAccept(const QString& accept)
 {
     this->accept=accept;
+    return *this;
 }
 
 AcceptName& AcceptName::setUsers(const QSet<User*>& users)
 {
     this->users=users;
+    return *this;
 }
 
 QJsonObject AcceptName::build()
