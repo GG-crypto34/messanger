@@ -20,6 +20,7 @@ public:
     ~Widget();
 private slots:
     void newMessage();
+    void sendMessage();
 
 private:
     Ui::Widget *ui;
