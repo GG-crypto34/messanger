@@ -20,7 +20,22 @@ Server::Server()
     commands["change_status"]=[this](const QJsonObject& json, User* user){change_status(json, user);};
     commands["check_name"]=[this](const QJsonObject& json, User* user){check_name(json, user);};
 }
-
+void Server::update_list(){
+    QJsonArray arr;
+    for(auto user:users){
+        QJsonObject j;
+        j["name"]=user->name;
+        if(j["satus"]=="active"){
+            arr.append(j);
+        }
+    }
+    QJsonObject json;
+    json["users"]=arr;
+    QJsonDocument doc(json);
+    for(auto user: users){
+        user->write(doc.toJson());
+    }
+}
 void Server::check_name(const QJsonObject& json, User* user)
 {
     QString name= json["name"].toString();
