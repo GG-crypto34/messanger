@@ -4,7 +4,7 @@
 #include "ui_widget.h"
 #include "message.h"
 #include "login.h"
-
+#include <QStringList>
 #include <qjsondocument.h>
 
 Widget::Widget(QWidget *parent)
@@ -70,4 +70,17 @@ void Widget::sendMessage(){
     socket.write(doc.toJson(QJsonDocument::Compact));
     qDebug() << "sent message: " << doc;
 
+}
+
+void Widget::update_list(){
+    QJsonObject json;
+    json["type"] = "update_list";
+    QJsonDocument doc(json);
+    socket.write(doc.toJson(QJsonDocument::Compact));
+    qDebug() << "sent message: " << doc;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(socket.readAll());
+    QVariantMap map = jsonDoc.object().toVariantMap();
+    for(QString name : map.take("name").toString()){
+        ui->userslist->addItem(name);
+    }
 }

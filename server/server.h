@@ -16,6 +16,7 @@ private:
     void public_message(const QJsonObject&, User*);
     void private_message(const QJsonObject&, User*);
     void change_status(const QJsonObject&, User*);
+    void update_list(const QJsonObject&, User*);
     QSet<User*> users;
     void incomingConnection(qintptr socketDescriptor) override;
     bool isValid(const QString& name);

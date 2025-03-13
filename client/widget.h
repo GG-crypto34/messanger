@@ -21,6 +21,7 @@ public:
 private slots:
     void newMessage();
     void sendMessage();
+    void update_list();
 
 private:
     Ui::Widget *ui;

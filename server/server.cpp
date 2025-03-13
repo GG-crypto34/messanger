@@ -19,8 +19,23 @@ Server::Server()
     commands["private_message"]=[this](const QJsonObject& json, User* user){private_message(json, user);};
     commands["change_status"]=[this](const QJsonObject& json, User* user){change_status(json, user);};
     commands["check_name"]=[this](const QJsonObject& json, User* user){check_name(json, user);};
+    commands["update_list"]=[this](const QJsonObject& js, User* user){update_list(js, user);};
 }
-
+void Server::update_list(const QJsonObject& js, User* user){
+    QJsonArray arr;
+    for(auto user:users){
+        QJsonObject j;
+        j["name"]=user->name;
+        j["status"]=user->status;
+        arr.append(j);
+    }
+    QJsonObject json;
+    json["users"]=arr;
+    QJsonDocument doc(json);
+    user->write(doc.toJson());
+    qDebug() << __func__ << ": "<< doc;
+    return;
+}
 void Server::check_name(const QJsonObject& json, User* user)
 {
     QString name= json["name"].toString();
