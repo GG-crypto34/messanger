@@ -73,7 +73,7 @@ bool Server::isValid(const QString &name)
     for(auto user:users){
         if(name==user->name) return false;
     }
-    if(name=="all") return false;
+    if(name=="all" || name.isEmpty()) return false;
     return true;
 }
 

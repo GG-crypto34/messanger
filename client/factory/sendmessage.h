@@ -5,9 +5,9 @@ class SendMessage
 {
 private:
     QString message;
-    bool all= false;
     QString receiver;
     QString sender;
+    bool all= false;
 public:
     SendMessage(QString message):message(message){}
     SendMessage& toAll(){
@@ -31,10 +31,11 @@ QJsonObject SendMessage::build()
     if(sender.isEmpty()) throw std::invalid_argument("empty sender name");
     if(!all && receiver.isEmpty()) throw std::invalid_argument("please call 'toAll' or 'toReceiver' ");
     if(all && !receiver.isEmpty()) throw std::invalid_argument("cant send to all and to user at the same time");
+
     QJsonObject json;
-    json["type"]="send_message";
-    json["message"]=message;
-    json["receiver"]=all? "all": receiver;
-    json["sender"]= sender;
+    json["type"] = "send_message";
+    json["message"] = message;
+    json["receiver"] = all ? "all" : receiver;
+    json["sender"] = sender;
     return json;
 }
