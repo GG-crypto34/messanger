@@ -19,7 +19,8 @@ add_executable(client
                 widget.h widget.cpp widget.ui
                 main.cpp
                 login.h login.cpp
-                factory/checkname.h)
+                factory/checkname.h
+                factory/sendmessage.h)
 
 
 # Подключение библиотек Qt

@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "factory/checkname.h"
+#include "factory/sendmessage.h"
 #include "ui_widget.h"
 #include "message.h"
 #include "login.h"
@@ -11,9 +12,7 @@ Widget::Widget(QWidget *parent)
     , ui(new Ui::Widget)
 {
     ui->setupUi(this);
-    ui->scrollAreaWidgetContents->layout()->addWidget(new Message);
-    ui->scrollAreaWidgetContents->layout()->addWidget(new Message);
-    ui->scrollAreaWidgetContents->layout()->addWidget(new Message);
+    connect(ui->pushButton, &QPushButton::clicked, this, &Widget::sendMessage);
     l=new Login;
     connect(l, &Login::pushButton,[this](QString ip, QString login){
         Widget::login=login;
@@ -59,4 +58,16 @@ void Widget::accept_name(const QJsonObject &json)
     else{
         //ошибка в имени
     }
+}
+
+void Widget::sendMessage(){
+    QString message = ui->lineEdit->text();
+    if(message.isEmpty()) return;
+    QJsonObject json=SendMessage(message).from(login).toAll().build();
+    ui->lineEdit->clear();
+    ui->scrollAreaWidgetContents->layout()->addWidget(new Message(login, message));
+    QJsonDocument doc(json);
+    socket.write(doc.toJson(QJsonDocument::Compact));
+    qDebug() << "sent message: " << doc;
+
 }

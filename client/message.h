@@ -12,7 +12,7 @@ class Message : public QWidget
     Q_OBJECT
 
 public:
-    explicit Message(QWidget *parent = nullptr);
+    Message(QString name, QString text);
     ~Message();
 
 private:
