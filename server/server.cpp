@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include "factory/acceptname.h"
+#include "factory/updatelist.h"
 
 Server::Server()
 {
@@ -20,7 +21,15 @@ Server::Server()
     commands["change_status"]=[this](const QJsonObject& json, User* user){change_status(json, user);};
     commands["check_name"]=[this](const QJsonObject& json, User* user){check_name(json, user);};
 }
-
+void Server::update_list(){
+    QJsonObject json=UpdateList().build(users);
+    QJsonDocument doc(json);
+    for(auto user: users){
+        if(!user->name.isEmpty()){
+            user->write(doc.toJson());
+        }
+    }
+}
 void Server::check_name(const QJsonObject& json, User* user)
 {
     QString name= json["name"].toString();
@@ -33,10 +42,12 @@ void Server::check_name(const QJsonObject& json, User* user)
     }
     user->name=name;
     user->status="active";
-    auto jsonObj = AcceptName().setAccept("succed").setUsers(users).build();
+    auto jsonObj = AcceptName().setAccept("succed").build();
     QJsonDocument doc(jsonObj);
     user->write(doc.toJson());
+    user->flush();
     qDebug() << __func__ << ": "<< doc;
+    update_list();
 }
 
 void Server::public_message(const QJsonObject&, User*)
