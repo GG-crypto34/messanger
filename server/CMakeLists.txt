@@ -19,7 +19,8 @@ add_executable(server
                 server.h server.cpp
                 user.h user.cpp
 
-                factory/acceptname.h )
+                factory/acceptname.h
+                factory/updatelist.h )
 
 
 # Подключение библиотек Qt

@@ -73,10 +73,17 @@ void Widget::sendMessage(){
 
 }
 
-void Widget::update_list(QJsonObject jsn){
-    QVariantMap map = jsn.toVariantMap();
-    ui->userslist->clear();
-    for(QString name : map.take("name").toString()){
-        ui->userslist->addItem(name);
+void Widget::update_list(const QJsonObject& jsn){
+    QJsonArray arr=jsn["users"].toArray();
+    QStringList users;
+    for(auto user : arr){
+        QJsonObject obj=user.toObject();
+        QString name=obj["name"].toString();
+        if(name!=login){
+            users.append(name);
+        }
     }
+    ui->userslist->clear();
+    ui->userslist->addItem("All");
+    ui->userslist->addItems(users);
 }

@@ -21,7 +21,6 @@ public:
 private slots:
     void newMessage();
     void sendMessage();
-    void update_list(QJsonObject);
 
 private:
     Ui::Widget *ui;
@@ -29,6 +28,7 @@ private:
     QString login;
     QMap<QString, std::function<void(const QJsonObject&)>> commands;
     void accept_name(const QJsonObject&);
+    void update_list(const QJsonObject&);
     Login* l;
 };
 #endif // WIDGET_H
