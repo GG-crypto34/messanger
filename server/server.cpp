@@ -16,10 +16,9 @@ Server::Server()
         qDebug() << "listen failed";
         return;
     }
-    commands["public_message"]=[this](const QJsonObject& json, User* user){public_message(json, user);};
-    commands["private_message"]=[this](const QJsonObject& json, User* user){private_message(json, user);};
     commands["change_status"]=[this](const QJsonObject& json, User* user){change_status(json, user);};
     commands["check_name"]=[this](const QJsonObject& json, User* user){check_name(json, user);};
+    commands["send_message"]=[this](const QJsonObject& json, User* user){message_type(json, user);};
 }
 void Server::update_list(){
     QJsonObject json=UpdateList().build(users);
@@ -50,14 +49,33 @@ void Server::check_name(const QJsonObject& json, User* user)
     update_list();
 }
 
-void Server::public_message(const QJsonObject&, User*)
+void Server::message_type(const QJsonObject &json, User* user)
 {
-
+    if(json["receiver"]=="All") public_message(json, user); return;
+    private_message(json, user);
 }
 
-void Server::private_message(const QJsonObject&, User*)
+void Server::public_message(const QJsonObject &json, User* user)
 {
+    json["type"]="new_message";
+    QJsonDocument doc(json);
+    for(auto user : users){
+        user->write(doc.toJson());
+        user->flush();
+    }
+}
 
+void Server::private_message(const QJsonObject &json, User* user)
+{
+    QString receiver = json["receiver"].toString();
+    json["type"]="new_message";
+    QJsonDocument doc(json);
+    for(auto user : users){
+        if(user->name==receiver){
+            user->write(doc.toJson());
+            user->flush();
+        }
+    }
 }
 
 void Server::change_status(const QJsonObject&, User*)
