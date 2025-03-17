@@ -30,6 +30,7 @@ Widget::Widget(QWidget *parent)
     QWidget::connect(&socket, &QTcpSocket::readyRead, this, &Widget::newMessage);
     commands["accept_name"]=[this](const QJsonObject& json){accept_name(json);};
     commands["update_list"]=[this](const QJsonObject& json){update_list(json);};
+    commands["new_message"]=[this](const QJsonObject& json){deserializer(json);};
     l->exec();
 }
 
@@ -49,6 +50,15 @@ void Widget::newMessage()
     // Извлекаем JSON объект
     QJsonObject jsonObject = jsonDoc.object();
     commands[jsonObject["type"].toString()](jsonObject);
+}
+
+void Widget::deserializer(const QJsonObject &json)
+{
+    QString message = json["message"].toString();
+    QString sender = json["sender"].toString();
+    /*QString receiver = json["receiver"].toString();
+    if(receiver!="All") receiver = "private message";  сделать отображение публичного и приватного сообщения */
+    ui->scrollAreaWidgetContents->layout()->addWidget(new Message(sender, message));
 }
 
 void Widget::accept_name(const QJsonObject &json)
