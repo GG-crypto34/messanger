@@ -29,7 +29,7 @@ private:
     QMap<QString, std::function<void(const QJsonObject&)>> commands;
     void accept_name(const QJsonObject&);
     void update_list(const QJsonObject&);
-    void deserializer(const QJsonObject&);
+    void new_message(const QJsonObject&);
     Login* l;
 };
 #endif // WIDGET_H
