@@ -35,7 +35,7 @@ QJsonObject SendMessage::build()
     QJsonObject json;
     json["type"] = "send_message";
     json["message"] = message;
-    json["receiver"] = all ? "all" : receiver;
+    json["receiver"] = all ? "All" : receiver;
     json["sender"] = sender;
     return json;
 }

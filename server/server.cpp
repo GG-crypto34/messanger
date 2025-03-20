@@ -58,9 +58,11 @@ void Server::send_message(const QJsonObject &json, User* user)
 void Server::public_message(const QJsonObject &json, User* user)
 {
     QJsonDocument doc(json);
-    for(auto user : users){
-        user->write(doc.toJson());
-        user->flush();
+    for(auto client : users){
+        if(client!=user){
+            client->write(doc.toJson());
+            client->flush();
+        }
     }
 }
 
@@ -100,7 +102,7 @@ bool Server::isValid(const QString &name)
     for(auto user:users){
         if(name==user->name) return false;
     }
-    if(name=="all" || name.isEmpty()) return false;
+    if(name=="All" || name.isEmpty()) return false;
     return true;
 }
 
