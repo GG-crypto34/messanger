@@ -20,7 +20,8 @@ add_executable(client
                 main.cpp
                 login.h login.cpp
                 factory/checkname.h
-                factory/sendmessage.h)
+                factory/sendmessage.h
+            )
 
 
 # Подключение библиотек Qt

@@ -30,6 +30,7 @@ Widget::Widget(QWidget *parent)
     QWidget::connect(&socket, &QTcpSocket::readyRead, this, &Widget::newMessage);
     commands["accept_name"]=[this](const QJsonObject& json){accept_name(json);};
     commands["update_list"]=[this](const QJsonObject& json){update_list(json);};
+    commands["send_message"]=[this](const QJsonObject& json){new_message(json);};
     l->exec();
 }
 
@@ -51,6 +52,15 @@ void Widget::newMessage()
     commands[jsonObject["type"].toString()](jsonObject);
 }
 
+void Widget::new_message(const QJsonObject &json)
+{
+    QString message = json["message"].toString();
+    QString sender = json["sender"].toString();
+    Message* widget = new Message(sender, message);
+    widget->layout()->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    ui->scrollAreaWidgetContents->layout()->addWidget(widget);
+}
+
 void Widget::accept_name(const QJsonObject &json)
 {
     if(json["accept"].toString()=="succed"){
@@ -66,11 +76,13 @@ void Widget::sendMessage(){
     if(message.isEmpty()) return;
     QJsonObject json=SendMessage(message).from(login).toAll().build();
     ui->lineEdit->clear();
-    ui->scrollAreaWidgetContents->layout()->addWidget(new Message(login, message));
     QJsonDocument doc(json);
     socket.write(doc.toJson(QJsonDocument::Compact));
     qDebug() << "sent message: " << doc;
 
+    Message* widget = new Message(login, message);
+    widget->layout()->setAlignment(Qt::AlignRight | Qt::AlignTop);
+    ui->scrollAreaWidgetContents->layout()->addWidget(widget);
 }
 
 void Widget::update_list(const QJsonObject& jsn){
