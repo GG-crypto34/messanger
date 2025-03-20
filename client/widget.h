@@ -1,5 +1,7 @@
 #ifndef WIDGET_H
 #define WIDGET_H
+
+#include "message.h"
 #include <QTcpSocket>
 #include <QWidget>
 
@@ -31,5 +33,6 @@ private:
     void update_list(const QJsonObject&);
     void new_message(const QJsonObject&);
     Login* l;
+    void addMessage(Message* message);
 };
 #endif // WIDGET_H

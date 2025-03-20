@@ -58,7 +58,13 @@ void Widget::new_message(const QJsonObject &json)
     QString sender = json["sender"].toString();
     Message* widget = new Message(sender, message);
     widget->layout()->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    ui->scrollAreaWidgetContents->layout()->addWidget(widget);
+    addMessage(widget);
+}
+
+void Widget::addMessage(Message *message)
+{
+    QVBoxLayout* l =dynamic_cast<QVBoxLayout*>(ui->scrollAreaWidgetContents->layout());
+    l->insertWidget(l->count()-1, message);
 }
 
 void Widget::accept_name(const QJsonObject &json)
@@ -82,7 +88,7 @@ void Widget::sendMessage(){
 
     Message* widget = new Message(login, message);
     widget->layout()->setAlignment(Qt::AlignRight | Qt::AlignTop);
-    ui->scrollAreaWidgetContents->layout()->addWidget(widget);
+    addMessage(widget);
 }
 
 void Widget::update_list(const QJsonObject& jsn){
