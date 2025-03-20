@@ -56,7 +56,9 @@ void Widget::new_message(const QJsonObject &json)
 {
     QString message = json["message"].toString();
     QString sender = json["sender"].toString();
-    ui->scrollAreaWidgetContents->layout()->addWidget(new Message(sender, message));
+    Message* widget = new Message(sender, message);
+    widget->layout()->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    ui->scrollAreaWidgetContents->layout()->addWidget(widget);
 }
 
 void Widget::accept_name(const QJsonObject &json)
@@ -74,11 +76,13 @@ void Widget::sendMessage(){
     if(message.isEmpty()) return;
     QJsonObject json=SendMessage(message).from(login).toAll().build();
     ui->lineEdit->clear();
-    ui->scrollAreaWidgetContents->layout()->addWidget(new Message(login, message));
     QJsonDocument doc(json);
     socket.write(doc.toJson(QJsonDocument::Compact));
     qDebug() << "sent message: " << doc;
 
+    Message* widget = new Message(login, message);
+    widget->layout()->setAlignment(Qt::AlignRight | Qt::AlignTop);
+    ui->scrollAreaWidgetContents->layout()->addWidget(widget);
 }
 
 void Widget::update_list(const QJsonObject& jsn){
