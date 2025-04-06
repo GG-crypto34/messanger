@@ -51,7 +51,10 @@ void Server::check_name(const QJsonObject& json, User* user)
 
 void Server::send_message(const QJsonObject &json, User* user)
 {
-    if(json["receiver"]=="All") public_message(json, user); return;
+    if(json["receiver"]=="All"){
+        public_message(json, user);
+        return;
+    }
     private_message(json, user);
 }
 

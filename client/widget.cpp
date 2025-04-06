@@ -80,7 +80,11 @@ void Widget::accept_name(const QJsonObject &json)
 void Widget::sendMessage(){
     QString message = ui->lineEdit->text();
     if(message.isEmpty()) return;
-    QJsonObject json=SendMessage(message).from(login).toAll().build();
+    QJsonObject json;
+    if(ui->userslist->currentText() !="all")
+        json = SendMessage(message).from(login).toReceiver(ui->userslist->currentText()).build();
+    else
+        json = SendMessage(message).from(login).toAll().build();
     ui->lineEdit->clear();
     QJsonDocument doc(json);
     socket.write(doc.toJson(QJsonDocument::Compact));
