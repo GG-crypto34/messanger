@@ -12,7 +12,7 @@ class Message : public QWidget
     Q_OBJECT
 
 public:
-    Message(QString name, QString text);
+    Message(QString name, QString text, QString date);
     ~Message();
 
 private:

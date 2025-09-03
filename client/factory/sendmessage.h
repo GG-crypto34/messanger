@@ -7,6 +7,7 @@ private:
     QString message;
     QString receiver;
     QString sender;
+    QString stamp;
     bool all= false;
 public:
     SendMessage(QString message):message(message){}
@@ -20,6 +21,10 @@ public:
     }
     SendMessage& from(QString name){
         sender = name;
+        return *this;
+    }
+    SendMessage& stamping(QString date){
+        stamp = date;
         return *this;
     }
     QJsonObject build();
@@ -37,5 +42,6 @@ QJsonObject SendMessage::build()
     json["message"] = message;
     json["receiver"] = all ? "All" : receiver;
     json["sender"] = sender;
+    json["date"] = stamp;
     return json;
 }
