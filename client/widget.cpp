@@ -54,9 +54,11 @@ void Widget::newMessage()
 
 void Widget::new_message(const QJsonObject &json)
 {
+    //qDebug() << json;
     QString message = json["message"].toString();
     QString sender = json["sender"].toString();
-    Message* widget = new Message(sender, message);
+    QString stamp = json["date"].toString();
+    Message* widget = new Message(sender, message, stamp);
     widget->layout()->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     addMessage(widget);
 }
@@ -79,18 +81,19 @@ void Widget::accept_name(const QJsonObject &json)
 
 void Widget::sendMessage(){
     QString message = ui->lineEdit->text();
+    QDateTime current = QDateTime::currentDateTime();
+    QString current1 = current.toString("dd.MM.yyyy hh:mm:ss");
     if(message.isEmpty()) return;
     QJsonObject json;
     if(ui->userslist->currentText() !="all")
-        json = SendMessage(message).from(login).toReceiver(ui->userslist->currentText()).build();
+        json = SendMessage(message).from(login).toReceiver(ui->userslist->currentText()).stamping(current1).build();
     else
         json = SendMessage(message).from(login).toAll().build();
     ui->lineEdit->clear();
     QJsonDocument doc(json);
     socket.write(doc.toJson(QJsonDocument::Compact));
     qDebug() << "sent message: " << doc;
-
-    Message* widget = new Message(login, message);
+    Message* widget = new Message(login, message, current1);
     widget->layout()->setAlignment(Qt::AlignRight | Qt::AlignTop);
     addMessage(widget);
 }

@@ -36,3 +36,4 @@ private:
     void addMessage(Message* message);
 };
 #endif // WIDGET_H
+
